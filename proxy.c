@@ -120,8 +120,7 @@ int main(int argc,char *argv[])
     		if (i==server_sock)
     		{
     			frontend_sock = accept(server_sock,(struct sockaddr*)&client_addr,&addrlen);	
-					//n=recv(frontend_sock,buf,BUFFER_MAX, 0);
-					backend_sock=create_backend_connection(backend_server_ip,80);//web server
+					backend_sock=create_backend_connection(backend_server_ip,backend_server_port);
 					sockfds[frontend_sock]=backend_sock;
 					sockfds[backend_sock]=frontend_sock;
 					FD_SET(frontend_sock, &master_set);
@@ -136,9 +135,9 @@ int main(int argc,char *argv[])
     				splice(pfd[0], NULL, sockfds[i], NULL, n, SPLICE_F_MORE| SPLICE_F_MOVE);
     			else
     			{
-    				shutdown(i, SHUT_RDWR); // stop other processes from using socket
+    				shutdown(i, SHUT_RDWR); 
   					close(i);
-  					shutdown(sockfds[i], SHUT_RDWR); // stop other processes from using socket
+  					shutdown(sockfds[i], SHUT_RDWR); 
   					close(sockfds[i]);
   					FD_CLR(i, &master_set);
   					FD_CLR(sockfds[i], &master_set);
